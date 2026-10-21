@@ -1,0 +1,17 @@
+CONCEPTUAL AGGREGATION KERNEL
+
+Inputs: normalized adjacency A_hat, transformed features T = X * W0, output H1.
+Assign one parallel worker to each output element H1[i,k].
+
+For each node i and feature k:
+    accumulator = 0
+    for each node j:
+        accumulator += A_hat[i,j] * T[j,k]
+    H1[i,k] = max(0, accumulator)  # ReLU
+
+Equation: H1[i,k] = ReLU(sum_j A_hat[i,j] * T[j,k])
+
+Self-loops are already included in A_hat. Sparse implementations can skip
+zero adjacency entries. This is framework-neutral pseudocode. The Python
+reference is in src/baby_kernel_style.py. Actual GPU thread mapping, memory
+layout, and launch syntax depend on the course's Baby Kernel API.
